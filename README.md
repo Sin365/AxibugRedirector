@@ -1,0 +1,3 @@
+# AxibugRedirector
+
+重定向任何Windows应用程序域名解析到指定IP的工具
