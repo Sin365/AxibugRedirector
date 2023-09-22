@@ -14,15 +14,15 @@
 
 ### 原理
 
-核心原理是Hook Win32的WS2_32.DLL 的gethostname等函数，指向您配置的IP
+核心原理是Hook Win32的WS2_32.DLL 的gethostname等函数，指向您配置的IP，以达到重定向的效果
 
-【控制台版本使用方法】
+### 控制台版本使用方法
 
 下载Release版本，或者自编译AxibugRedirector项目.
 编辑可执行程序目录的config.cfg配置文件
 
 格式（可多行）
-本地监听端口:目标IP:目标端口
+域名:目标重定向IP
 
 如：
 
