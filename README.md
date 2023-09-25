@@ -14,7 +14,7 @@
 
 ### 原理
 
-核心原理是Hook Win32的WS2_32.DLL 的gethostname等函数，指向您配置的IP，以达到重定向的效果
+核心原理是Hook Win32的WS2_32.DLL 的gethostname、gethostbyaddr、gethostname、connect等函数，指向您配置的IP，以达到重定向的效果
 
 ### 控制台版本使用方法
 
