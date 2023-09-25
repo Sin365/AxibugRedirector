@@ -94,8 +94,22 @@ namespace AxibugRedirector
             }
 
             Console.WriteLine("已就绪");
-            while(true)
-                Console.ReadLine();
+            while (true)
+            {
+                string str = Console.ReadLine();
+                if (int.TryParse(str, out int cmd))
+                {
+                    if (cmd == 4)
+                    {
+                        Console.WriteLine($"再次注入PID{CurrPid}");
+                        if (DoInjectByPid(cmd))
+                        {
+                            bflag = true;
+                            Console.WriteLine($"再次注入PID{CurrPid}成功！");
+                        }
+                    }
+                }
+            }
         }
 
         [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
@@ -207,6 +221,7 @@ namespace AxibugRedirector
         }
 
         #region 运行时处理
+        static int CurrPid;
         public static bool StartProcessWithHook(string path)
         {
             var pro = new Process();
@@ -230,7 +245,7 @@ namespace AxibugRedirector
                 Console.WriteLine("失败："+ex.ToString());
                 return false;
             }
-
+            CurrPid = pro.Id;
             return DoInjectByPid(pro.Id);
         }
         #endregion
