@@ -125,10 +125,22 @@ namespace AxibugInject
         }
 
         */
+
+        /*
+         * struct sockaddr_in {
+        short   sin_family;
+        u_short sin_port;
+        struct  in_addr sin_addr;
+        char    sin_zero[8];
+};
+         */
+
+
+
         /// <summary>
         /// Internet socket address structure.
         /// </summary>
-        public struct sockaddr_in
+        public struct sockaddr_in_old
         {
             /// <summary>
             /// Protocol family indicator.
@@ -148,6 +160,93 @@ namespace AxibugInject
             //[MarshalAs(UnmanagedType.LPStr, SizeConst=8)]
             //public string sin_zero;
             public long sin_zero;
+        }
+
+        /// <summary>
+        /// Internet socket address structure.
+        /// </summary>
+        public struct sockaddr_in
+        {
+            /// <summary>
+            /// Protocol family indicator.
+            /// </summary>
+            public short sin_family;
+            /// <summary>
+            /// Protocol port.
+            /// </summary>
+            public ushort sin_port;
+            /// <summary>
+            /// Actual address value.
+            /// </summary>
+            public in_addr sin_addr;
+            /// <summary>
+            /// Address content list.
+            /// </summary>
+            [MarshalAs(UnmanagedType.LPStr, SizeConst=8)]
+            public string sin_zero;
+            //public long sin_zero;
+        }
+
+        [StructLayout(LayoutKind.Explicit, Size = 4)]
+        public struct in_addr
+        {
+            [FieldOffset(0)] internal byte s_b1;
+            [FieldOffset(1)] internal byte s_b2;
+            [FieldOffset(2)] internal byte s_b3;
+            [FieldOffset(3)] internal byte s_b4;
+
+            [FieldOffset(0)] internal ushort s_w1;
+            [FieldOffset(2)] internal ushort s_w2;
+
+            [FieldOffset(0)] internal uint S_addr;
+
+            /// <summary>
+            /// can be used for most tcp & ip code
+            /// </summary>
+            internal uint s_addr
+            {
+                get { return S_addr; }
+            }
+
+            /// <summary>
+            /// host on imp
+            /// </summary>
+            internal byte s_host
+            {
+                get { return s_b2; }
+            }
+
+            /// <summary>
+            /// network
+            /// </summary>
+            internal byte s_net
+            {
+                get { return s_b1; }
+            }
+
+            /// <summary>
+            /// imp
+            /// </summary>
+            internal ushort s_imp
+            {
+                get { return s_w2; }
+            }
+
+            /// <summary>
+            /// imp #
+            /// </summary>
+            internal byte s_impno
+            {
+                get { return s_b4; }
+            }
+
+            /// <summary>
+            /// logical host
+            /// </summary>
+            internal byte s_lh
+            {
+                get { return s_b3; }
+            }
         }
         /*
         public enum SocketFlags

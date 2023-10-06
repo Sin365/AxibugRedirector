@@ -94,6 +94,7 @@ namespace AxibugInject
                     new Dconnect(connect_Hooked),
                     this);
                 connectHook.ThreadACL.SetExclusiveACL(new int[1]);
+                
             }
             catch (Exception ex)
             {
@@ -209,18 +210,37 @@ namespace AxibugInject
         //    public uint sin6_scope_id;
         //}
         [DllImport("Ws2_32.dll")]
-        public static extern int connect(IntPtr SocketHandle, ref sockaddr_in addr, int addrsize);
+        public static extern int connect(IntPtr SocketHandle, ref sockaddr_in_old addr, int addrsize);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-        delegate int Dconnect(IntPtr SocketHandle, ref sockaddr_in addr, int addrsize);
-        static int connect_Hooked(IntPtr SocketHandle, ref sockaddr_in addr, int addrsize)
+        delegate int Dconnect(IntPtr SocketHandle, ref sockaddr_in_old addr, int addrsize);
+        static int connect_Hooked(IntPtr SocketHandle, ref sockaddr_in_old addr, int addrsize)
         {
             ConsoleShow.Log($"connect[调用]SocketHandle->{SocketHandle} addr->{addr} addrsize->{addrsize}");
-            ConsoleShow.Log($"connect sockaddr_in 详情 :sin_family->{addr.sin_family} sin_addr->{addr.sin_addr} sin_port->{addr.sin_port}");
+            ConsoleShow.Log($"connect sockaddr_in 详情 :sin_family->{addr.sin_family} sin_addr->{addr.sin_addr}" +
+                $" sin_port->{GetPort(addr.sin_port)}");
+            /*ConsoleShow.Log($"connect sockaddr_in 详情 :sin_family->{addr.sin_family} sin_addr->{addr.sin_addr.s_b1}.{addr.sin_addr.s_b2}.{addr.sin_addr.s_b3}.{addr.sin_addr.s_b4}" +
+                $" sin_port->{GetPort(addr.sin_port)}");*/
             // call original API...
             return connect(SocketHandle, ref addr, addrsize);
         }
 
+
+        static int GetPort(ushort Tbed)
+        {
+            if (Tbed < 256)
+                return Tbed;
+
+            byte gao = (byte)(Tbed >> 8);
+            byte di = (byte)(Tbed & 0xff);
+
+            ushort a = (ushort)(gao << 8);
+            ushort b = (ushort)di;
+            //ushort newBed = (ushort)(a | di);
+
+            ushort newT = (ushort)(gao | di << 8);
+            return newT;
+        }
         #endregion
 
 

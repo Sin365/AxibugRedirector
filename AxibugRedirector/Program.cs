@@ -116,27 +116,61 @@ namespace AxibugRedirector
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);
 
+
         private static bool RegGACAssembly()
         {
             var dllName = "EasyHook.dll";
-            var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
-            if (!RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+            var dllPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
+            if (System.Runtime.InteropServices.RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+                new System.EnterpriseServices.Internal.Publish().GacRemove(dllPath);
+            Thread.Sleep(100);
+            new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
+            Thread.Sleep(100);
+            if (System.Runtime.InteropServices.RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+                Console.WriteLine("{0} registered to GAC successfully.", dllName);
+            else
             {
-                new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
-                Thread.Sleep(100);
+                Console.WriteLine("{0} registered to GAC failed.", dllName);
+                return false;
             }
 
             dllName = "AxibugInject.dll";
-            dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
-            new System.EnterpriseServices.Internal.Publish().GacRemove(dllPath);
-            if (!RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+            dllPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
+            if (System.Runtime.InteropServices.RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+                new System.EnterpriseServices.Internal.Publish().GacRemove(dllPath);
+            Thread.Sleep(100);
+            new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
+            Thread.Sleep(100);
+            if (System.Runtime.InteropServices.RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+                Console.WriteLine("{0} registered to GAC successfully.", dllName);
+            else
             {
-                new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
-                Thread.Sleep(100);
+                Console.WriteLine("{0} registered to GAC failed.", dllName);
+                return false;
             }
-
             return true;
         }
+        //private static bool RegGACAssembly()
+        //{
+        //    var dllName = "EasyHook.dll";
+        //    var dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
+        //    if (!RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+        //    {
+        //        new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
+        //        Thread.Sleep(100);
+        //    }
+
+        //    dllName = "AxibugInject.dll";
+        //    dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
+        //    new System.EnterpriseServices.Internal.Publish().GacRemove(dllPath);
+        //    if (!RuntimeEnvironment.FromGlobalAccessCache(Assembly.LoadFrom(dllPath)))
+        //    {
+        //        new System.EnterpriseServices.Internal.Publish().GacInstall(dllPath);
+        //        Thread.Sleep(100);
+        //    }
+
+        //    return true;
+        //}
 
         private static bool InstallHookInternal(int processId)
         {
